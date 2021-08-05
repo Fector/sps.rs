@@ -1,0 +1,12 @@
+[package]
+name = "sps-rs"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+axum = "0.1.2"
+tokio = {version = "1.9.0", "features" = ["macros", "rt-multi-thread"]}
+tower = "0.4.8"
+hyper = "0.14.11"
