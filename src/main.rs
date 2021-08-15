@@ -1,4 +1,8 @@
+mod config;
+
+use crate::config::{server_address, server_port};
 use axum::prelude::*;
+use std::net::SocketAddr;
 
 #[tokio::main]
 async fn main() {
@@ -10,8 +14,11 @@ async fn main() {
         )
         .route("/wallets/:wallet", get(|| async { "Get a wallet" }));
 
-    hyper::Server::bind(&"0.0.0.0:8080".parse().unwrap())
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+    hyper::Server::bind(&SocketAddr::new(
+        server_address().parse().unwrap(),
+        server_port(),
+    ))
+    .serve(app.into_make_service())
+    .await
+    .unwrap();
 }
