@@ -1,6 +1,6 @@
 use std::env;
 
-pub fn server_address() -> String {
+pub fn server_host() -> String {
     env::var("SERVER_ADDR").unwrap_or("127.0.0.1".to_string())
 }
 
