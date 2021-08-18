@@ -1,0 +1,58 @@
+version: "3.6"
+
+services:
+
+  postgres:
+    container_name: postgres_sps_container
+    image: postgres:12-alpine
+    shm_size: 512M
+    volumes:
+      - postgres_sps:/data/postgres
+    ports:
+      - 5432:5432
+    command: >
+      postgres
+      -c work_mem=16MB
+      -c shared_preload_libraries=pg_stat_statements
+      -c pg_stat_statements.track=all
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: gate
+      PGDATA: /data/postgres
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.24
+    ports:
+      - 6831:6831/udp
+      - 16686:16686
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus:/etc/prometheus
+    ports:
+      - 9090:9090
+    #network_mode: host
+    command:
+      - '--config.file=/etc/prometheus/config.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=1h'
+
+  grafana:
+    image: grafana/grafana:latest
+    depends_on:
+      - prometheus
+    volumes:
+      - ./grafana/:/etc/grafana/provisioning/
+    ports:
+      - 3000:3000
+    #network_mode: host
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=secret
+      - GF_ANALYTICS_REPORTING_ENABLED=false
+      - GF_ANALYTICS_CHECK_FOR_UPDATES=false
+
+volumes:
+  postgres_sps:
