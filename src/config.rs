@@ -1,14 +1,25 @@
 use std::env;
+use std::net::IpAddr;
 
-pub fn server_host() -> String {
-    env::var("SERVER_ADDR").unwrap_or("127.0.0.1".to_string())
+pub struct Config {
+    pub host: IpAddr,
+    pub port: u16,
 }
 
-pub fn server_port() -> u16 {
-    let default_port: u16 = 8080;
-    let env_value = env::var("SERVER_PORT");
-    if let Ok(port) = env_value {
-        return port.parse::<u16>().unwrap_or(default_port);
+impl Config {
+    pub fn from_env() -> Config {
+        let default_port: u16 = 8091;
+        let default_host: IpAddr = IpAddr::from([127, 0, 0, 1]);
+
+        let host: IpAddr = match env::var("SPS_SERVER_ADDR") {
+            Ok(h) => h.parse().unwrap(),
+            Err(_) => default_host,
+        };
+
+        let port = match env::var("SPS_SERVER_PORT") {
+            Ok(p) => p.parse::<u16>().unwrap(),
+            Err(_) => default_port,
+        };
+        Config { host, port }
     }
-    default_port
 }
