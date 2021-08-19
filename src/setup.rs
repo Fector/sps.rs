@@ -1,13 +1,10 @@
 use crate::config::Config;
+use crate::server::RestAPIServer;
 use clap::ArgMatches;
-use std::net::IpAddr;
 
 pub fn patch_config(cfg: &mut Config, matches: &ArgMatches) -> Result<(), &'static str> {
     if let Some(h) = matches.value_of("host") {
-        match h.parse::<IpAddr>() {
-            Ok(h) => cfg.host = h,
-            Err(_) => return Err("failed to parse host"),
-        }
+        cfg.host = h.to_string();
     }
 
     if let Some(p) = matches.value_of("port") {
@@ -18,4 +15,8 @@ pub fn patch_config(cfg: &mut Config, matches: &ArgMatches) -> Result<(), &'stat
     }
 
     Ok(())
+}
+
+pub fn setup_rest_server(cfg: &Config) -> RestAPIServer {
+    RestAPIServer::new(cfg.host.parse().unwrap(), cfg.port)
 }
