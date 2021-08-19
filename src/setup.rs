@@ -2,7 +2,7 @@ use crate::config::Config;
 use clap::ArgMatches;
 use std::net::IpAddr;
 
-pub fn patch_config(cfg: &mut Config, matches: ArgMatches) -> Result<(), &'static str> {
+pub fn patch_config(cfg: &mut Config, matches: &ArgMatches) -> Result<(), &'static str> {
     if let Some(h) = matches.value_of("host") {
         match h.parse::<IpAddr>() {
             Ok(h) => cfg.host = h,

@@ -1,0 +1,14 @@
+name: Simple payment system
+about: Pet project with Axum
+subcommands:
+  - run:
+      about: runs REST API server
+      args:
+        - host:
+            short: H
+            about: Sets a custom host address.
+            takes_value: true
+        - port:
+            short: p
+            about: Sets a custom port address.
+            takes_value: true
