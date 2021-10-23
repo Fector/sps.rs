@@ -1,4 +1,7 @@
-use axum::prelude::*;
+use axum::{
+    Router,
+    handler::get
+};
 use std::net::IpAddr;
 use std::net::SocketAddr;
 
@@ -14,7 +17,7 @@ impl RestAPIServer {
 
     pub async fn start(&self) {
         let main_fn = || async { "Simple payment system API" };
-        let app = route("/", get(main_fn))
+        let app = Router::new().route("/", get(main_fn))
             .route(
                 "/wallets",
                 get(|| async { "Wallets list" }).post(|| async { "Create a new wallet" }),
